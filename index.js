@@ -1,4 +1,4 @@
-const tasksList = [
+let tasksList = [
   { id: "1", text: "выучить html", completed: true },
   { id: "2", text: "выучить css", completed: true },
   { id: "3", text: "выучить js", completed: false },
@@ -12,23 +12,8 @@ const mainInput = document.querySelector('.new-todo');
 
 renderTasks(tasksList);
 
-deleteTask();
-
-function deleteTask() {
-  const id = document.getElementById('id');  
-  let remove = document.querySelectorAll('button');
-  tasksList.forEach.call( remove, function(button) {
-  button.onclick = function(e) {
-  const item = this.closest( 'li' );
-  item.remove()
-  tasksList.splice(button, 1);
-  }
-  });
-}
-  
 function getId() {
   let idsArray = tasksList.map(i => i.id)
-  console.log(idsArray)
   let maxId = Math.max(...idsArray);
   return maxId + 1;
 }
@@ -68,6 +53,14 @@ function renderTask(task) {
 
   const button = document.createElement('button');
   button.className = "destroy";
+  button.id = task.id
+  button.onclick = function(e) {
+    const id = e.target.id
+    tasksList = tasksList.filter(function(task){
+      return task.id !== id
+    })
+    renderTasks(tasksList);
+    }
 
   ul.appendChild(listItem);
   listItem.appendChild(div);
