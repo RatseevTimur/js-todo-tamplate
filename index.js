@@ -14,8 +14,8 @@ renderTasks(tasksList);
 
 function getId() {
   let idsArray = tasksList.map(i => i.id)
-  let maxId = Math.max(...idsArray);
-  return maxId + 1;
+  let maxId = Math.max(idsArray);
+  return (maxId + 1).toString();
 }
 
 mainInput.addEventListener('keydown', function (e) {
@@ -26,7 +26,6 @@ mainInput.addEventListener('keydown', function (e) {
     tasksList.push(newTask);
     renderTasks(tasksList);
     e.target.value = '';
-    deleteTask();
   }
 })
 
@@ -47,8 +46,19 @@ function renderTask(task) {
   input.className = "toggle";
   input.type = "checkbox";
   input.checked = task.completed;
+  input.id = task.id
+  input.onchange = function(e) {
+    tasksList = tasksList.map(function(task){
+      if (e.target.id === task.id){
+        return {id: task.id, text: task.text, completed:!task.completed}
+      }
+      return task
+    })
+    renderTasks(tasksList);
+  }
 
   const label = document.createElement('label');
+  label.className = task.completed ? 'completed' : ''
   label.innerHTML = task.text;
 
   const button = document.createElement('button');
