@@ -14,26 +14,57 @@ renderTasks(tasksList);
 
 function getId() {
   let idsArray = tasksList.map(i => i.id)
-  let maxId = Math.max(idsArray);
-  return (maxId + 1).toString();
+  let maxId = Math.max(...idsArray);
+  let newTaskId = (maxId > 0) ? maxId+1 : 1;
+  return newTaskId;
 }
 
 mainInput.addEventListener('keydown', function (e) {
   const enterKeyCode = 13;
   if (e.keyCode === enterKeyCode && e.target.value !== '') {
     const newTaskId = getId();
-    const newTask = { id: newTaskId, text: this.value, completed: false };
+    const newTask = { id: newTaskId.toString(), text: this.value, completed: false };
     tasksList.push(newTask);
     renderTasks(tasksList);
+    countActiveTasks();
     e.target.value = '';
   }
 })
+
+const span = document.querySelector('span');
+function countActiveTasks (){
+tasksListC = tasksList.filter(function(task){
+  return task.completed === false
+})
+const activeTasks = tasksListC.length;
+span.textContent = 'Active Tasks: ' + activeTasks;
+}
+countActiveTasks();
 
 function renderTasks(tasks) {
   ul.innerHTML = '';
   tasks.forEach(task => {
     renderTask(task);
   })
+}
+
+
+document.querySelector('a').onclick = function(){
+  renderTasks(tasksList);
+}
+
+function FilterCompleted(){
+  tasksListF = tasksList.filter(function(task){
+    return task.completed === true
+  })
+  renderTasks(tasksListF);
+}
+
+function FilterActive(){
+  tasksListF = tasksList.filter(function(task){
+    return task.completed === false
+  })
+  renderTasks(tasksListF);
 }
 
 function renderTask(task) {
@@ -55,6 +86,7 @@ function renderTask(task) {
       return task
     })
     renderTasks(tasksList);
+    countActiveTasks();
   }
 
   const label = document.createElement('label');
@@ -70,6 +102,7 @@ function renderTask(task) {
       return task.id !== id
     })
     renderTasks(tasksList);
+    countActiveTasks();
     }
 
   ul.appendChild(listItem);
