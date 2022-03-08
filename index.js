@@ -28,6 +28,7 @@ mainInput.addEventListener('keydown', function (e) {
     renderTasks(tasksList);
     countActiveTasks();
     e.target.value = '';
+    checkFooter();
   }
 })
 
@@ -46,6 +47,20 @@ function renderTasks(tasks) {
   tasks.forEach(task => {
     renderTask(task);
   })
+}
+
+const footer = document.querySelector('footer');
+function checkFooter(){
+  if (tasksList.length == 0) {
+    footer.className = "hidden";
+} else {
+  footer.className= 'footer';
+}
+ /* 
+ if (tasksList.length == 0){
+  footer.remove();
+ } else {footer}
+ */
 }
 
 
@@ -103,6 +118,7 @@ function renderTask(task) {
     })
     renderTasks(tasksList);
     countActiveTasks();
+    checkFooter();
     }
 
   ul.appendChild(listItem);

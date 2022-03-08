@@ -382,3 +382,7 @@ html .clear-completed:active {
     -webkit-text-shadow:0 0 20px rgb(69, 226, 90);
     text-shadow:0 0 28px rgb(69, 226, 90);
 }
+
+.hidden {
+  display: none;
+}    
