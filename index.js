@@ -31,13 +31,13 @@ mainInput.addEventListener('keydown', function (e) {
   }
 })
 
-const span = document.querySelector('span');
+const taskCount = document.querySelector('span');
 function countActiveTasks (){
-tasksListC = tasksList.filter(function(task){
-  return task.completed === false
+tasksListActive = tasksList.filter(function(task){
+  return !task.completed
 })
-const activeTasks = tasksListC.length;
-span.textContent = 'Active Tasks: ' + activeTasks;
+const activeTasks = tasksListActive.length;
+taskCount.textContent = 'Active Tasks: ' + activeTasks;
 }
 countActiveTasks();
 
@@ -54,17 +54,17 @@ document.querySelector('a').onclick = function(){
 }
 
 function FilterCompleted(){
-  tasksListF = tasksList.filter(function(task){
-    return task.completed === true
+  tasksListCompleted = tasksList.filter(function(task){
+    return task.completed
   })
-  renderTasks(tasksListF);
+  renderTasks(tasksListCompleted);
 }
 
 function FilterActive(){
-  tasksListF = tasksList.filter(function(task){
-    return task.completed === false
+  tasksListActive = tasksList.filter(function(task){
+    return !task.completed
   })
-  renderTasks(tasksListF);
+  renderTasks(tasksListActive);
 }
 
 function renderTask(task) {
