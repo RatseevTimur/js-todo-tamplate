@@ -1,18 +1,21 @@
-let tasksList = [
-  { id: "1", text: "выучить html", completed: true },
-  { id: "2", text: "выучить css", completed: true },
-  { id: "3", text: "выучить js", completed: false },
-  { id: "4", text: "выучить фреймворк", completed: false },
-  { id: "5", text: "написать несколько учебных проектов", completed: false },
-  { id: "6", text: "пройти собеседование", completed: false },
-  { id: "7", text: "получить работу", completed: false },
-];
+let tasksList = [];
+
 const ul = document.querySelector('.todo-list');
 const mainInput = document.querySelector('.new-todo');
+
+function recordStorage(){
+  window.localStorage.setItem('tasksList', JSON.stringify(tasksList))
+}
+
+function extractionStorage(){
+  tasksList = JSON.parse(window.localStorage.getItem('tasksList'))
+  return tasksList
+}
 
 renderTasks(tasksList);
 
 function getId() {
+  extractionStorage();
   let idsArray = tasksList.map(i => i.id)
   let maxId = Math.max(...idsArray);
   let newTaskId = (maxId > 0) ? maxId+1 : 1;
@@ -22,9 +25,11 @@ function getId() {
 mainInput.addEventListener('keydown', function (e) {
   const enterKeyCode = 13;
   if (e.keyCode === enterKeyCode && e.target.value !== '') {
+    tasksList = extractionStorage();
     const newTaskId = getId();
     const newTask = { id: newTaskId.toString(), text: this.value, completed: false };
     tasksList.push(newTask);
+    recordStorage();
     renderTasks(tasksList);
     countActiveTasks();
     e.target.value = '';
@@ -41,13 +46,26 @@ taskCount.textContent = 'Active Tasks: ' + activeTasks;
 }
 countActiveTasks();
 
-function renderTasks(tasks) {
+function renderTasks(tasksList) {
   ul.innerHTML = '';
-  tasks.forEach(task => {
+ tasksList = extractionStorage();
+  tasksList.forEach(task => {
     renderTask(task);
   })
 }
 
+<<<<<<< Updated upstream
+=======
+const footer = document.querySelector('footer');
+function checkFooter(){
+  if (tasksList.length == 0) {
+    footer.className = "hidden";
+} else {
+  footer.className= 'footer';
+}
+}
+
+>>>>>>> Stashed changes
 
 document.querySelector('a').onclick = function(){
   renderTasks(tasksList);
@@ -85,6 +103,7 @@ function renderTask(task) {
       }
       return task
     })
+    recordStorage();
     renderTasks(tasksList);
     countActiveTasks();
   }
@@ -98,9 +117,11 @@ function renderTask(task) {
   button.id = task.id
   button.onclick = function(e) {
     const id = e.target.id
+    window.localStorage.removeItem('tasksList');
     tasksList = tasksList.filter(function(task){
       return task.id !== id
     })
+    recordStorage();
     renderTasks(tasksList);
     countActiveTasks();
     }
