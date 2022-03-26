@@ -3,10 +3,12 @@ let tasksList = [];
 const ul = document.querySelector('.todo-list');
 const mainInput = document.querySelector('.new-todo');
 
+//Запись в локальное хранилище
 function recordStorage(){
   window.localStorage.setItem('tasksList', JSON.stringify(tasksList))
 }
 
+//Извлечение из локального хранилища
 function extractionStorage(){
   tasksList = JSON.parse(window.localStorage.getItem('tasksList'))
   return tasksList
@@ -14,6 +16,21 @@ function extractionStorage(){
 
 renderTasks(tasksList);
 
+//Сохранение фильтра
+filterSaved();
+function filterSaved(){
+  let filter = window.localStorage.getItem('filter')
+  console.log(filter);
+  if (filter == "Completed"){
+    FilterCompleted();
+  }
+  else if (filter == "Active"){
+    FilterActive();
+  }
+  else{renderTasks(tasksList);}
+}
+
+//Присвоение нового id
 function getId() {
   extractionStorage();
   let idsArray = tasksList.map(i => i.id)
@@ -22,6 +39,7 @@ function getId() {
   return newTaskId;
 }
 
+//Отрисовка новой задачи
 mainInput.addEventListener('keydown', function (e) {
   const enterKeyCode = 13;
   if (e.keyCode === enterKeyCode && e.target.value !== '') {
@@ -36,6 +54,7 @@ mainInput.addEventListener('keydown', function (e) {
   }
 })
 
+//Счетчик активных задач
 const taskCount = document.querySelector('span');
 function countActiveTasks (){
 tasksListActive = tasksList.filter(function(task){
@@ -46,6 +65,7 @@ taskCount.textContent = 'Active Tasks: ' + activeTasks;
 }
 countActiveTasks();
 
+//Перебор и отрисовка элеметов массива
 function renderTasks(tasksList) {
   ul.innerHTML = '';
  tasksList = extractionStorage();
@@ -54,8 +74,7 @@ function renderTasks(tasksList) {
   })
 }
 
-<<<<<<< Updated upstream
-=======
+//Скрыть футер при пустом массиве задач
 const footer = document.querySelector('footer');
 function checkFooter(){
   if (tasksList.length == 0) {
@@ -65,26 +84,44 @@ function checkFooter(){
 }
 }
 
->>>>>>> Stashed changes
-
+//Отменить фильтры
 document.querySelector('a').onclick = function(){
+  let filter = ""
+  window.localStorage.setItem('filter', filter)
   renderTasks(tasksList);
 }
 
+//Фильтр выполненых задач
 function FilterCompleted(){
   tasksListCompleted = tasksList.filter(function(task){
     return task.completed
   })
-  renderTasks(tasksListCompleted);
+  window.localStorage.setItem('tasksListCompleted', JSON.stringify(tasksListCompleted))
+  ul.innerHTML = '';
+  tasksListCompleted.forEach(task => {
+     renderTask(task);
+  })
+  let filter = "Completed"
+  window.localStorage.setItem('filter', filter)
+  //renderTasks(tasksListCompleted);
 }
 
+//Фильтр активных задач
 function FilterActive(){
   tasksListActive = tasksList.filter(function(task){
     return !task.completed
   })
-  renderTasks(tasksListActive);
+  window.localStorage.setItem('tasksListActive', JSON.stringify(tasksListActive))
+  ul.innerHTML = '';
+  tasksListActive.forEach(task => {
+     renderTask(task);
+  })
+  let filter = "Active"
+  window.localStorage.setItem('filter', filter)
+//renderTasks(tasksListActive);
 }
 
+//Отрисовка одной задачи
 function renderTask(task) {
   const listItem = document.createElement('li');
 
@@ -117,7 +154,6 @@ function renderTask(task) {
   button.id = task.id
   button.onclick = function(e) {
     const id = e.target.id
-    window.localStorage.removeItem('tasksList');
     tasksList = tasksList.filter(function(task){
       return task.id !== id
     })
