@@ -3,6 +3,11 @@ let tasksList = [];
 const ul = document.querySelector('.todo-list');
 const mainInput = document.querySelector('.new-todo');
 
+//Запись в локальное хранилище
+recordStorage();
+function recordStorage(){
+  window.localStorage.setItem('tasksList', JSON.stringify(tasksList))
+}
 
 //Извлечение из локального хранилища
 extractionStorage();
@@ -10,13 +15,6 @@ function extractionStorage(){
   tasksList = JSON.parse(window.localStorage.getItem('tasksList'))
   return tasksList
 }
-
-//Запись в локальное хранилище
-recordStorage();
-function recordStorage(){
-  window.localStorage.setItem('tasksList', JSON.stringify(tasksList))
-}
-
 
 renderTasks(tasksList);
 
