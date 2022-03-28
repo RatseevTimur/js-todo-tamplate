@@ -3,24 +3,55 @@ let tasksList = [];
 const ul = document.querySelector('.todo-list');
 const mainInput = document.querySelector('.new-todo');
 
-//Запись в локальное хранилище
-function recordStorage(){
-  window.localStorage.setItem('tasksList', JSON.stringify(tasksList))
-}
 
 //Извлечение из локального хранилища
+extractionStorage();
 function extractionStorage(){
   tasksList = JSON.parse(window.localStorage.getItem('tasksList'))
   return tasksList
 }
 
+//Запись в локальное хранилище
+recordStorage();
+function recordStorage(){
+  window.localStorage.setItem('tasksList', JSON.stringify(tasksList))
+}
+
+
 renderTasks(tasksList);
+
+
+//Изменение стиля фильтра
+filterSavedClass();
+function filterSavedClass(){
+  let filter = window.localStorage.getItem('filter')
+  const all = document.getElementById("all")
+  const active = document.getElementById("active")
+  const complet = document.getElementById("completed")
+  if (filter == "Completed"){
+    //(!complet).className = ""
+    all.className = ""
+    complet.className = "selected"
+    active.className = ""
+  }
+  else if (filter == "Active"){
+    //(!active).className = ""
+    all.className = ""
+    complet.className = ""
+    active.className = "selected"
+  }
+  else{
+    //(!all).className = ""
+    all.className = "selected"
+    complet.className = ""
+    active.className = ""
+}
+}
 
 //Сохранение фильтра
 filterSaved();
 function filterSaved(){
   let filter = window.localStorage.getItem('filter')
-  console.log(filter);
   if (filter == "Completed"){
     FilterCompleted();
   }
@@ -47,8 +78,8 @@ mainInput.addEventListener('keydown', function (e) {
     const newTaskId = getId();
     const newTask = { id: newTaskId.toString(), text: this.value, completed: false };
     tasksList.push(newTask);
-    recordStorage();
-    renderTasks(tasksList);
+    recordStorage(tasksList);
+    filterSaved();
     countActiveTasks();
     e.target.value = '';
   }
@@ -68,6 +99,7 @@ countActiveTasks();
 //Перебор и отрисовка элеметов массива
 function renderTasks(tasksList) {
   ul.innerHTML = '';
+  filterSavedClass();
  tasksList = extractionStorage();
   tasksList.forEach(task => {
     renderTask(task);
@@ -93,6 +125,7 @@ document.querySelector('a').onclick = function(){
 
 //Фильтр выполненых задач
 function FilterCompleted(){
+  tasksList = extractionStorage()
   tasksListCompleted = tasksList.filter(function(task){
     return task.completed
   })
@@ -103,11 +136,12 @@ function FilterCompleted(){
   })
   let filter = "Completed"
   window.localStorage.setItem('filter', filter)
-  //renderTasks(tasksListCompleted);
+  filterSavedClass();
 }
 
 //Фильтр активных задач
 function FilterActive(){
+  tasksList = extractionStorage()
   tasksListActive = tasksList.filter(function(task){
     return !task.completed
   })
@@ -118,7 +152,7 @@ function FilterActive(){
   })
   let filter = "Active"
   window.localStorage.setItem('filter', filter)
-//renderTasks(tasksListActive);
+  filterSavedClass();
 }
 
 //Отрисовка одной задачи
@@ -140,8 +174,8 @@ function renderTask(task) {
       }
       return task
     })
-    recordStorage();
-    renderTasks(tasksList);
+    recordStorage(tasksList);
+    filterSaved();
     countActiveTasks();
   }
 
@@ -157,8 +191,8 @@ function renderTask(task) {
     tasksList = tasksList.filter(function(task){
       return task.id !== id
     })
-    recordStorage();
-    renderTasks(tasksList);
+    recordStorage(tasksList);
+    filterSaved();
     countActiveTasks();
     }
 
